@@ -1,16 +1,24 @@
-# reels
+Reels App 🎥
+Reels App is a Flutter app that plays video reels fetched from an online API. It offers a smooth video playback experience using video_player and enhanced controls via chewie. Users can interact with the videos through like, comment, and share buttons.
 
-A new Flutter project.
+## Demo Video 🎥
+Watch the demo video to see how the app works:
+[Click here to watch the video](https://drive.google.com/file/d/1KKWy0q6-oR-8eI04pDK26RtsYlDCG5nl/view?usp=drive_link)
 
-## Getting Started
+Features ✨
+Play Videos: Seamless video playback with auto-play and looping features.
+Interactive Buttons: Like, comment, and share each video.
+Full-Screen Mode: Watch videos in full-screen for better viewing.
+Smooth User Experience: A clean, responsive design for easy use.
 
-This project is a starting point for a Flutter application.
+How to Use 📲
+Launch the App: Open the app on your device.
+Play a Video: Tap on a video to watch it with auto-play enabled.
+Interact: Like, comment, or share the video using the available buttons.
 
-A few resources to get you started if this is your first Flutter project:
+Technologies Used 🛠
+Flutter: Cross-platform framework for building mobile applications.
+Dart: The programming language used to build the app.
+video_player: For video playback functionality.
+chewie: For enhanced video controls.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
