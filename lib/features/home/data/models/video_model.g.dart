@@ -18,7 +18,7 @@ class VideoModelAdapter extends TypeAdapter<VideoModel> {
     };
     return VideoModel(
       url: fields[0] as String,
-      title: fields[1] as String,
+      likesCount: fields[1] as String,
     );
   }
 
@@ -29,7 +29,7 @@ class VideoModelAdapter extends TypeAdapter<VideoModel> {
       ..writeByte(0)
       ..write(obj.url)
       ..writeByte(1)
-      ..write(obj.title);
+      ..write(obj.likesCount);
   }
 
   @override

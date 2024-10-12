@@ -10,21 +10,21 @@ class VideoModel {
   final String url;
 
   @HiveField(1)
-  final String title;
+  final String likesCount;
 
-  VideoModel({required this.url, required this.title});
+  VideoModel({required this.url, required this.likesCount});
 
   factory VideoModel.fromJson(Map<String, dynamic> json) {
     return VideoModel(
       url: json['video'],
-      title: json['title'] ?? 'Untitled',
+      likesCount: json['likes_count_translated'] ?? 'Untitled',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'video': url,
-      'title': title,
+      'likes_count_translated': likesCount,
     };
   }
 }
