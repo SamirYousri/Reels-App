@@ -1,39 +1,36 @@
-// ignore_for_file: depend_on_referenced_packages
-import 'dart:convert';
-import 'package:bloc/bloc.dart';
-import 'package:http/http.dart' as http;
-import 'package:reels/features/home/presentation/manager/reels_cubit/reels_state.dart';
+// viewmodels/reels_cubit.dart
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reels/core/services/video_service.dart';
+import 'package:reels/features/home/data/local_data_source/hive_service.dart';
+import 'package:reels/features/home/data/models/video_model.dart';
+
+import 'reels_state.dart';
 
 class ReelsCubit extends Cubit<ReelsState> {
-  ReelsCubit() : super(ReelsInitial());
+  final VideoService videoService;
+  final HiveService hiveService;
 
-  Future<void> fetchReels() async {
+  ReelsCubit(this.videoService, this.hiveService) : super(ReelsInitial());
+
+  Future<void> fetchVideos() async {
+    emit(ReelsLoading());
+
     try {
-      emit(ReelsLoading());
-      final response =
-          await http.get(Uri.parse('https://api.sawalef.app/api/v1/reels'));
+      final List<VideoModel> videos = await videoService.fetchVideos();
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data != null && data['data'] != null) {
-          // final List<String> videos =
-          //     List<String>.from(data['data'].map((item) => item['video']));
-
-          List<dynamic> videoData = data['data'];
-          List<String> videos = [];
-          for (var item in videoData) {
-            videos.add(item['video']);
-          }
-
-          emit(ReelsLoaded(videos));
-        } else {
-          emit(ReelsError('No videos available'));
-        }
-      } else {
-        emit(ReelsError('Failed to load reels'));
+      for (var video in videos) {
+        await hiveService.saveVideo(video);
       }
+
+      emit(ReelsLoaded(videos));
     } catch (e) {
-      emit(ReelsError('Error: $e'));
+      final cachedVideos = hiveService.getAllVideos();
+      if (cachedVideos.isNotEmpty) {
+        emit(ReelsLoaded(cachedVideos));
+      } else {
+        emit(ReelsError('Failed to fetch videos: $e'));
+      }
     }
   }
 }

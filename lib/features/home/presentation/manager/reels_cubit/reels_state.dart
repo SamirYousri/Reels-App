@@ -1,3 +1,5 @@
+import 'package:reels/features/home/data/models/video_model.dart';
+
 abstract class ReelsState {}
 
 class ReelsInitial extends ReelsState {}
@@ -5,13 +7,13 @@ class ReelsInitial extends ReelsState {}
 class ReelsLoading extends ReelsState {}
 
 class ReelsLoaded extends ReelsState {
-  final List<String> videos;
+  final List<VideoModel> videos;
 
   ReelsLoaded(this.videos);
 }
 
 class ReelsError extends ReelsState {
-  final String error;
+  final String errmessage;
 
-  ReelsError(this.error);
+  ReelsError(this.errmessage);
 }

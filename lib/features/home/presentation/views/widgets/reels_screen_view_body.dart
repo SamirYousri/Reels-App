@@ -18,11 +18,15 @@ class ReelsScreenViewBody extends StatelessWidget {
             scrollDirection: Axis.vertical,
             itemCount: state.videos.length,
             itemBuilder: (context, index) {
-              return VideoPlayerWidget(videoUrl: state.videos[index]);
+              final nextIndex = (index + 1) % state.videos.length;
+              return VideoPlayerWidget(
+                videoUrl: state.videos[index].url,
+                nextVideoUrl: state.videos[nextIndex].url,
+              );
             },
           );
         } else if (state is ReelsError) {
-          return Center(child: Text(state.error));
+          return Center(child: Text(state.errmessage));
         } else {
           return const Center(child: Text('No reels available'));
         }

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reels/core/services/video_service.dart';
+import 'package:reels/features/home/data/local_data_source/hive_service.dart';
+import 'package:reels/features/home/presentation/manager/reels_cubit/reels_cubit.dart';
 import 'package:reels/features/home/presentation/views/widgets/reels_screen_view_body.dart';
 
 class ReelsScreen extends StatelessWidget {
@@ -10,7 +14,11 @@ class ReelsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Reels'),
       ),
-      body: const ReelsScreenViewBody(),
+      body: BlocProvider(
+        create: (context) =>
+            ReelsCubit(VideoService(), HiveService())..fetchVideos(),
+        child: const ReelsScreenViewBody(),
+      ),
     );
   }
 }
