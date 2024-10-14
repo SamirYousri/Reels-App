@@ -18,10 +18,8 @@ class ReelsScreenViewBody extends StatelessWidget {
             scrollDirection: Axis.vertical,
             itemCount: state.videos.length,
             itemBuilder: (context, index) {
-              final nextIndex = (index + 1) % state.videos.length;
               return VideoPlayerWidget(
                 videoUrl: state.videos[index].url,
-                nextVideoUrl: state.videos[nextIndex].url,
               );
             },
           );

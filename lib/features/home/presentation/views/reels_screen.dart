@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reels/core/services/video_cache_service.dart';
 import 'package:reels/core/services/video_service.dart';
-import 'package:reels/features/home/data/local_data_source/hive_service.dart';
 import 'package:reels/features/home/presentation/manager/reels_cubit/reels_cubit.dart';
 import 'package:reels/features/home/presentation/views/widgets/reels_screen_view_body.dart';
 
@@ -16,7 +16,7 @@ class ReelsScreen extends StatelessWidget {
       ),
       body: BlocProvider(
         create: (context) =>
-            ReelsCubit(VideoService(), HiveService())..fetchVideos(),
+            ReelsCubit(VideoService(), VideoCacheService())..loadVideos(),
         child: const ReelsScreenViewBody(),
       ),
     );

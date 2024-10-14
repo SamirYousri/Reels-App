@@ -1,36 +1,25 @@
-// viewmodels/reels_cubit.dart
-
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reels/core/services/video_cache_service.dart';
 import 'package:reels/core/services/video_service.dart';
-import 'package:reels/features/home/data/local_data_source/hive_service.dart';
-import 'package:reels/features/home/data/models/video_model.dart';
-
 import 'reels_state.dart';
 
 class ReelsCubit extends Cubit<ReelsState> {
   final VideoService videoService;
-  final HiveService hiveService;
+  final VideoCacheService cacheService;
 
-  ReelsCubit(this.videoService, this.hiveService) : super(ReelsInitial());
+  ReelsCubit(this.videoService, this.cacheService) : super(ReelsInitial());
 
-  Future<void> fetchVideos() async {
+  Future<void> loadVideos() async {
     emit(ReelsLoading());
 
     try {
-      final List<VideoModel> videos = await videoService.fetchVideos();
-
+      final videos = await videoService.fetchVideos();
       for (var video in videos) {
-        await hiveService.saveVideo(video);
+        await cacheService.downloadAndCacheVideo(video.url); // تحميل مسبق
       }
-
       emit(ReelsLoaded(videos));
     } catch (e) {
-      final cachedVideos = hiveService.getAllVideos();
-      if (cachedVideos.isNotEmpty) {
-        emit(ReelsLoaded(cachedVideos));
-      } else {
-        emit(ReelsError('Failed to fetch videos: $e'));
-      }
+      emit(ReelsError('Failed to fetch videos: $e'));
     }
   }
 }

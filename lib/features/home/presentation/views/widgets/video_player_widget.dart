@@ -1,17 +1,20 @@
 //ignore_for_file: library_private_types_in_public_api
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:reels/features/home/data/local_data_source/hive_service.dart';
+import 'package:reels/core/services/video_cache_service.dart';
 import 'package:reels/features/home/presentation/views/widgets/build_interaction_buttons.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
-  final String nextVideoUrl;
 
-  const VideoPlayerWidget(
-      {super.key, required this.videoUrl, required this.nextVideoUrl});
+  const VideoPlayerWidget({
+    super.key,
+    required this.videoUrl,
+  });
 
   @override
   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
@@ -20,39 +23,39 @@ class VideoPlayerWidget extends StatefulWidget {
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late VideoPlayerController controller;
   ChewieController? chewieController;
-  late VideoPlayerController nextController;
+  final VideoCacheService cacheService = VideoCacheService();
   bool isLoading = true;
-  final HiveService hiveService = HiveService();
 
   @override
   void initState() {
     super.initState();
-    _initializeControllers();
+    _initializeVideo();
   }
 
-  Future<void> _initializeControllers() async {
-    controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
-    nextController =
-        VideoPlayerController.networkUrl(Uri.parse(widget.nextVideoUrl));
-
-    await controller.initialize();
-    await nextController.initialize();
-
-    setState(() {
-      isLoading = false;
-      chewieController = ChewieController(
-        videoPlayerController: controller,
-        autoPlay: true,
-        looping: true,
-      );
-    });
+  Future<void> _initializeVideo() async {
+    try {
+      final File videoFile =
+          await cacheService.downloadAndCacheVideo(widget.videoUrl);
+      controller = VideoPlayerController.file(videoFile)
+        ..initialize().then((_) {
+          setState(() {
+            isLoading = false;
+            chewieController = ChewieController(
+              videoPlayerController: controller,
+              autoPlay: true,
+              looping: true,
+            );
+          });
+        });
+    } catch (e) {
+      print('Error loading video: $e');
+    }
   }
 
   @override
   void dispose() {
     controller.dispose();
     chewieController?.dispose();
-    nextController.dispose();
     super.dispose();
   }
 
